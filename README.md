@@ -33,6 +33,7 @@ cd Biblioteca-react
 ### 3. Instalar dependencias
 ```bash
 npm install
+npm install @tailwindcss/vite --save-dev
 ```
 
 ### 4. Iniciar el servidor de desarrollo
