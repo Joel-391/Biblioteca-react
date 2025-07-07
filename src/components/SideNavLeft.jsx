@@ -2,6 +2,7 @@ import axiosClient from '../api/Axios.js';
 import { useState } from "react";
 import { useNavigate } from 'react-router-dom';
 import { ArrowLeft, House, LayoutDashboard, ChevronDown, BookOpen, LogOut } from 'lucide-react';
+import { Link } from 'react-router-dom';
 
 export default function SideNavLeft() {
   const navigate = useNavigate();
@@ -42,10 +43,13 @@ export default function SideNavLeft() {
         className={`bg-white text-[var(--sidebar-foreground)] text-3xl rounded-full absolute -right-3 top-9 border border-[var(--sidebar-border)] cursor-pointer ${!open && "rotate-180"}`}
         onClick={() => setOpen(!open)}
       />
-      <div className="inline-flex p-2">
+        <Link to="/home" className="inline-flex items-center p-2 no-underline">
         <House className={`bg-amber300 text-4xl rounded cursor-pointer block float-left mt-1 mr-1 duration-300 ${open && "rotate-[360deg]"}`} />
-        <h1 className={`text-black origin-left font-medium text-2xl duration-300 ${!open && "scale-0"}`}>Home</h1>
-      </div>
+        <h1 className={`text-black origin-left font-medium text-2xl duration-300 ${!open && "scale-0"}`}>
+          Home
+        </h1>
+      </Link>
+
 
       <ul className="pt-2">
         {Menus.map((menu, index) => (

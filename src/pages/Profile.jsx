@@ -16,7 +16,7 @@ export default function Profile() {
 
   // Obtener los datos del usuario cuando el componente se monta
   useEffect(() => {
-    axiosClient.get("/profile")
+    axiosClient.get("/api/profile")
       .then((response) => {
         setUserData(response.data);  // Guardar los datos del perfil en el estado
         setFormData(response.data);  // Establecer los datos en el formulario
@@ -35,7 +35,7 @@ export default function Profile() {
 
     // Comprobar si los datos han cambiado antes de enviar la actualización
     if (JSON.stringify(formData) !== JSON.stringify(userData)) {
-      axiosClient.put("/profile", formData)
+      axiosClient.put("/api/profile", formData)
         .then(() => {
           setUserData(formData);  // Actualiza los datos de usuario con los nuevos valores
           setIsEditing(false); // Desactivar el modo de edición

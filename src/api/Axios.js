@@ -2,7 +2,7 @@ import axios from 'axios';
 import Cookies from 'js-cookie';
 
 const axiosClient = axios.create({
-  baseURL: 'http://localhost:8000',
+  baseURL: 'http://192.168.0.109',  // Tu IP del backend Laravel
   withCredentials: true,
   headers: {
     Accept: 'application/json',
@@ -13,7 +13,7 @@ const axiosClient = axios.create({
 axiosClient.interceptors.request.use((config) => {
   const token = Cookies.get('XSRF-TOKEN');
   if (token) {
-    config.headers['X-XSRF-TOKEN'] = token;
+    config.headers['X-XSRF-TOKEN'] = decodeURIComponent(token);
   }
   return config;
 });
