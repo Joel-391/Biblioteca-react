@@ -22,18 +22,20 @@
     "react-hook-form": "^7.56.4",
     "react-router-dom": "^7.6.1",
     "tailwind-merge": "^3.3.0",
-    "tailwindcss": "^4.1.8",
     "zod": "^3.25.42"
   },
   "devDependencies": {
     "@eslint/js": "^9.25.0",
-    "@tailwindcss/vite": "^4.1.8",
+    "@tailwindcss/postcss": "^4.1.11",
+    "@tailwindcss/vite": "^4.1.11",
     "@types/node": "^22.15.29",
     "@vitejs/plugin-react": "^4.4.1",
+    "autoprefixer": "^10.4.21",
     "eslint": "^9.25.0",
     "eslint-plugin-react-hooks": "^5.2.0",
     "eslint-plugin-react-refresh": "^0.4.19",
     "globals": "^16.0.0",
+    "tailwindcss": "^4.1.11",
     "tw-animate-css": "^1.3.2",
     "vite": "^6.3.5"
   }
