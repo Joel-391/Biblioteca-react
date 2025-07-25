@@ -3,9 +3,11 @@ import { useState } from "react";
 import { useNavigate } from 'react-router-dom';
 import { ArrowLeft, House, LayoutDashboard, ChevronDown, BookOpen, LogOut } from 'lucide-react';
 import { Link } from 'react-router-dom';
+import { useStateContext } from '../contexts/ContextProvider.jsx'; // Importa el contexto
 
 export default function SideNavLeft() {
   const navigate = useNavigate();
+  const { user } = useStateContext(); // Obtener usuario
 
   const logout = async () => {
     try {
@@ -19,8 +21,9 @@ export default function SideNavLeft() {
   const [open, setOpen] = useState(true);
   const [subMenuOpen, setSubMenuOpen] = useState(false);
 
+  // Menús, agrega el Admin solo si user.rol_id === 3
   const Menus = [
-    { title: "Dashboard", icon: <LayoutDashboard /> },
+    { title: "Dashboard", icon: <LayoutDashboard />, path: "/home" },
     { title: "Pages", spacing: true, icon: <BookOpen /> },
     {
       title: "Libro",
@@ -33,7 +36,10 @@ export default function SideNavLeft() {
       ],
     },
     { title: "Analytics", icon: <BookOpen /> },
-    { title: "Profile", icon: <BookOpen /> },
+    { title: "Profile", icon: <BookOpen />, path: "/profile" },
+    ...(user && user.rol_id === 3
+      ? [{ title: "Administrador", icon: <LayoutDashboard />, path: "/admin" }]
+      : []),
     { title: "Logout", icon: <LogOut /> },
   ];
 
@@ -43,13 +49,12 @@ export default function SideNavLeft() {
         className={`bg-white text-[var(--sidebar-foreground)] text-3xl rounded-full absolute -right-3 top-9 border border-[var(--sidebar-border)] cursor-pointer ${!open && "rotate-180"}`}
         onClick={() => setOpen(!open)}
       />
-        <Link to="/home" className="inline-flex items-center p-2 no-underline">
+      <Link to="/home" className="inline-flex items-center p-2 no-underline">
         <House className={`bg-amber300 text-4xl rounded cursor-pointer block float-left mt-1 mr-1 duration-300 ${open && "rotate-[360deg]"}`} />
         <h1 className={`text-black origin-left font-medium text-2xl duration-300 ${!open && "scale-0"}`}>
           Home
         </h1>
       </Link>
-
 
       <ul className="pt-2">
         {Menus.map((menu, index) => (
@@ -59,10 +64,10 @@ export default function SideNavLeft() {
               onClick={() => {
                 if (menu.title === "Logout") {
                   logout();
-                } else if (menu.title === "Profile") {
-                  navigate('/profile'); // Maneja la navegación aquí
                 } else if (menu.subMenu) {
                   setSubMenuOpen(!subMenuOpen);
+                } else if (menu.path) {
+                  navigate(menu.path);
                 }
               }}
             >

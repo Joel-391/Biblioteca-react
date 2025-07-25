@@ -7,7 +7,7 @@ export default function Home() {
 
   // Llamada a la API para obtener los 4 libros más recientes
   useEffect(() => {
-    fetch("/api/recent-books")
+    fetch("http://localhost:8000/api/recent-books")
       .then((response) => response.json())
       .then((data) => setRecentBooks(data))
       .catch((error) => console.error("Error al obtener libros recientes:", error));
@@ -15,7 +15,7 @@ export default function Home() {
 
   // Llamada a la API para obtener los libros recomendados
   useEffect(() => {
-    fetch("/api/recommended-books")
+    fetch("http://localhost:8000/api/recommended-books")
       .then((response) => response.json())
       .then((data) => setRecommendedBooks(data))
       .catch((error) => console.error("Error al obtener libros recomendados:", error));

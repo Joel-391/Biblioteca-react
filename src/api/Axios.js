@@ -2,7 +2,7 @@ import axios from 'axios';
 import Cookies from 'js-cookie';
 
 const axiosClient = axios.create({
-  baseURL: 'http://192.168.0.109',  // Tu IP del backend Laravel
+  baseURL: 'http://localhost:8000',  // Tu IP del backend Laravel
   withCredentials: true,
   headers: {
     Accept: 'application/json',
