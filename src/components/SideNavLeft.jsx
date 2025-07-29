@@ -3,11 +3,11 @@ import { useState } from "react";
 import { useNavigate } from 'react-router-dom';
 import { ArrowLeft, House, LayoutDashboard, ChevronDown, BookOpen, LogOut } from 'lucide-react';
 import { Link } from 'react-router-dom';
-import { useStateContext } from '../contexts/ContextProvider.jsx'; // Importa el contexto
+import { useStateContext } from '../contexts/ContextProvider.jsx';
 
 export default function SideNavLeft() {
   const navigate = useNavigate();
-  const { user } = useStateContext(); // Obtener usuario
+  const { user } = useStateContext();
 
   const logout = async () => {
     try {
@@ -21,9 +21,10 @@ export default function SideNavLeft() {
   const [open, setOpen] = useState(true);
   const [subMenuOpen, setSubMenuOpen] = useState(false);
 
-  // Menús, agrega el Admin solo si user.rol_id === 3
   const Menus = [
-    { title: "Dashboard", icon: <LayoutDashboard />, path: "/home" },
+    ...(user && user.rol_id === 3
+      ? [{ title: "Administrador", icon: <LayoutDashboard />, path: "/admin" }]
+      : []),
     { title: "Pages", spacing: true, icon: <BookOpen /> },
     {
       title: "Libro",
@@ -37,14 +38,11 @@ export default function SideNavLeft() {
     },
     { title: "Analytics", icon: <BookOpen /> },
     { title: "Profile", icon: <BookOpen />, path: "/profile" },
-    ...(user && user.rol_id === 3
-      ? [{ title: "Administrador", icon: <LayoutDashboard />, path: "/admin" }]
-      : []),
-    { title: "Logout", icon: <LogOut /> },
+    { title: "Logout", spacing: true, icon: <LogOut /> },
   ];
 
   return (
-    <div className={`bg-[var(--sidebar)] h-screen p-5 pt-8 ${open ? "w-72" : "w-20"} duration-300 relative`}>
+      <div className={`bg-[var(--sidebar)] min-h-screen p-5 pt-8 ${open ? "w-72" : "w-20"} duration-300 relative`}>
       <ArrowLeft
         className={`bg-white text-[var(--sidebar-foreground)] text-3xl rounded-full absolute -right-3 top-9 border border-[var(--sidebar-border)] cursor-pointer ${!open && "rotate-180"}`}
         onClick={() => setOpen(!open)}
