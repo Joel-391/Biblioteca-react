@@ -10,18 +10,36 @@ export default function Profile() {
   const [errorMessage, setErrorMessage] = useState('');
   const [successMessage, setSuccessMessage] = useState('');
 
-  // Obtener los datos del usuario cuando el componente se monta
+  const [alquileres, setAlquileres] = useState([]);
+  const [loadingAlquileres, setLoadingAlquileres] = useState(false);
+  const [errorAlquileres, setErrorAlquileres] = useState('');
+
   useEffect(() => {
     axiosClient.get("/api/profile")
       .then((response) => {
         setUserData(response.data);
         setFormData(response.data);
+        cargarAlquileres(response.data.id);
       })
       .catch((error) => {
         setErrorMessage("Error al obtener los datos del perfil");
         console.error("Error al obtener los datos del perfil", error);
       });
   }, []);
+
+  const cargarAlquileres = (userId) => {
+    setLoadingAlquileres(true);
+    setErrorAlquileres('');
+    axiosClient.get(`/api/alquileres?user_id=${userId}`)
+      .then(({ data }) => {
+        setAlquileres(data);
+      })
+      .catch((error) => {
+        setErrorAlquileres('Error al cargar los alquileres');
+        console.error('Error al cargar alquileres', error);
+      })
+      .finally(() => setLoadingAlquileres(false));
+  };
 
   const handleChange = useCallback((e) => {
     setFormData((prev) => ({ ...prev, [e.target.name]: e.target.value }));
@@ -52,7 +70,7 @@ export default function Profile() {
   return (
     <div className="flex">
       <SideNavLeft />
-      <div className="p-7 w-full">
+      <div className="p-7 w-full max-w-4xl mx-auto">
         <h1 className="text-2xl font-semibold mb-6">Mi Perfil</h1>
         <ProfileForm
           formData={formData}
@@ -63,6 +81,37 @@ export default function Profile() {
           errorMessage={errorMessage}
           successMessage={successMessage}
         />
+
+        <div className="mt-10">
+          <h2 className="text-xl font-semibold mb-4">Mis Alquileres</h2>
+          {loadingAlquileres && <p>Cargando alquileres...</p>}
+          {errorAlquileres && <p className="text-red-600">{errorAlquileres}</p>}
+          {!loadingAlquileres && alquileres.length === 0 && <p>No tienes alquileres.</p>}
+          {!loadingAlquileres && alquileres.length > 0 && (
+            <table className="min-w-full border-collapse border border-gray-300">
+              <thead>
+                <tr className="bg-gray-200">
+                  <th className="border border-gray-300 px-4 py-2">Título del Libro</th>
+                  <th className="border border-gray-300 px-4 py-2">Fecha Alquiler</th>
+                  <th className="border border-gray-300 px-4 py-2">Fecha Devolución</th>
+                  <th className="border border-gray-300 px-4 py-2">Devuelto</th>
+                  <th className="border border-gray-300 px-4 py-2">Estado</th>
+                </tr>
+              </thead>
+              <tbody>
+                {alquileres.map((alq) => (
+                  <tr key={alq.id} className="hover:bg-gray-100">
+                    <td className="border border-gray-300 px-4 py-2">{alq.ejemplar?.libro?.titulo ?? "N/A"}</td>
+                    <td className="border border-gray-300 px-4 py-2">{new Date(alq.fecha_alquiler).toLocaleDateString()}</td>
+                    <td className="border border-gray-300 px-4 py-2">{alq.fecha_devolucion ? new Date(alq.fecha_devolucion).toLocaleDateString() : "-"}</td>
+                    <td className="border border-gray-300 px-4 py-2">{alq.devuelto ? "Sí" : "No"}</td>
+                    <td className="border border-gray-300 px-4 py-2">{alq.estado}</td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          )}
+        </div>
       </div>
     </div>
   );

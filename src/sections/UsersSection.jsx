@@ -25,7 +25,7 @@ export default function UsersSection({ users, setUsers }) {
             { key: 'email', edit: true },
             { key: 'telefono', edit: true },
             { key: 'direccion', edit: true },
-            { key: 'activo', edit: true, type: 'checkbox' },
+            { key: "activo", edit: true, type: "text" }, // usar input tipo texto para "true"/"false"
             { key: 'rol_id', edit: true, type: 'number' },
           ]}
           created="created_at"

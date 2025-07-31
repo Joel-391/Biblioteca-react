@@ -8,28 +8,26 @@ const LibroDetalle = () => {
   const { id } = useParams();
   const [libro, setLibro] = useState(null);
   const [comentarios, setComentarios] = useState([]);
+  const [ejemplares, setEjemplares] = useState([]);
   const [nuevoComentario, setNuevoComentario] = useState('');
   const [calificacion, setCalificacion] = useState(0);
   const [enviando, setEnviando] = useState(false);
   const [mensajeError, setMensajeError] = useState('');
-  const [usuario, setUsuario] = useState(null); 
+  const [usuario, setUsuario] = useState(null);
+  const [alquilando, setAlquilando] = useState(false);
+  const [mensajeAlquiler, setMensajeAlquiler] = useState('');
 
   useEffect(() => {
     axiosClient.get(`/libros/${id}`).then(({ data }) => setLibro(data));
     axiosClient.get(`/libros/${id}/comentarios`).then(({ data }) => setComentarios(data));
-
-    // Obtener datos del usuario actual
-    axiosClient.get('/user')
-      .then(({ data }) => setUsuario(data))
-      .catch(() => setUsuario(null)); 
+    axiosClient.get(`/api/libros/${id}/ejemplares-disponibles`).then(({ data }) => setEjemplares(data));
+    axiosClient.get('/user').then(({ data }) => setUsuario(data)).catch(() => setUsuario(null));
   }, [id]);
 
   const enviarComentario = async () => {
     if (!nuevoComentario.trim()) return;
-
     setEnviando(true);
     setMensajeError('');
-
     try {
       await axiosClient.post(`/libros/${id}/comentarios`, {
         contenido: nuevoComentario,
@@ -48,8 +46,30 @@ const LibroDetalle = () => {
         setMensajeError('Error al enviar comentario.');
       }
     }
-
     setEnviando(false);
+  };
+
+  const alquilarEjemplar = async (ejemplarId) => {
+    setAlquilando(true);
+    setMensajeAlquiler('');
+    try {
+      await axiosClient.post('/api/alquileres', {
+        ejemplar_id: ejemplarId,
+      });
+      setMensajeAlquiler('Solicitud de alquiler enviada correctamente.');
+      // Actualiza la lista de ejemplares disponibles
+      const { data } = await axiosClient.get(`/api/libros/${id}/ejemplares-disponibles`);
+      setEjemplares(data);
+    } catch (err) {
+      if (err.response?.status === 403) {
+        setMensajeAlquiler('Tu cuenta ha sido desactivada. No puedes alquilar.');
+      } else if (err.response?.status === 401) {
+        setMensajeAlquiler('Debes iniciar sesión para alquilar.');
+      } else {
+        setMensajeAlquiler('Error al solicitar alquiler.');
+      }
+    }
+    setAlquilando(false);
   };
 
   const renderStars = (count) => (
@@ -84,14 +104,45 @@ const LibroDetalle = () => {
             <p className="text-gray-700 mb-1"><strong>ISBN:</strong> {libro.isbn}</p>
             <p className="text-gray-700 mb-1"><strong>Categoría:</strong> {libro.categoria?.nombre_cat}</p>
             <p className="text-gray-600 mt-4">{libro.descripcion}</p>
+
+            {/* Alquiler de ejemplares */}
+            <div className="mt-6">
+              <h3 className="font-semibold mb-2">Ejemplares disponibles:</h3>
+              {usuario ? (
+                usuario.activo ? (
+                  ejemplares.length > 0 ? (
+                    <ul className="space-y-2">
+                      {ejemplares.map((eje) => (
+                        <li key={eje.id} className="flex justify-between items-center border p-2 rounded">
+                          <span>Ubicación: {eje.ubicacion_fisica} - Nota: {eje.nota ?? 'Sin nota'}</span>
+                          <button
+                            onClick={() => alquilarEjemplar(eje.id)}
+                            className="bg-green-600 text-white px-3 py-1 rounded hover:bg-green-700"
+                            disabled={alquilando}
+                          >
+                            {alquilando ? 'Procesando...' : 'Solicitar alquiler'}
+                          </button>
+                        </li>
+                      ))}
+                    </ul>
+                  ) : (
+                    <p className="text-gray-500">No hay ejemplares disponibles actualmente.</p>
+                  )
+                ) : (
+                  <p className="text-red-600">Tu cuenta ha sido desactivada. No puedes alquilar.</p>
+                )
+              ) : (
+                <p className="text-gray-500">Debes iniciar sesión para alquilar.</p>
+              )}
+              {mensajeAlquiler && <p className="mt-2 text-blue-600">{mensajeAlquiler}</p>}
+            </div>
           </div>
         </div>
 
-        {/* Sección de Comentarios */}
+        {/* Comentarios */}
         <div className="mt-10">
           <h2 className="text-xl font-semibold mb-4">Comentarios de usuarios</h2>
-
-          {/* Formulario */}
+          {/* Comentario nuevo */}
           {usuario ? (
             usuario.activo ? (
               <div className="mb-6">
@@ -120,9 +171,7 @@ const LibroDetalle = () => {
                 >
                   {enviando ? 'Enviando...' : 'Publicar comentario'}
                 </button>
-                {mensajeError && (
-                  <p className="mt-2 text-red-600">{mensajeError}</p>
-                )}
+                {mensajeError && <p className="mt-2 text-red-600">{mensajeError}</p>}
               </div>
             ) : (
               <p className="text-red-600 mb-6">Tu cuenta ha sido desactivada. No puedes comentar.</p>
@@ -131,7 +180,7 @@ const LibroDetalle = () => {
             <p className="text-gray-500 mb-6">Debes iniciar sesión para comentar.</p>
           )}
 
-          {/* Comentarios listados */}
+          {/* Lista de comentarios */}
           {comentarios.length === 0 ? (
             <p>No hay comentarios aún.</p>
           ) : (

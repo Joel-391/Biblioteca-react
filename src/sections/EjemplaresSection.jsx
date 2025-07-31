@@ -43,7 +43,7 @@ export default function EjemplaresSection({ ejemplares, setEjemplares }) {
           fields={[
             { key: 'libro_id', edit: true, type: 'number' },
             { key: 'ubicacion_fisica', edit: true },
-            { key: 'disponible', edit: true, type: 'checkbox' },
+            { key: 'disponible', edit: true, type: 'select', options: ['true', 'false'] },
             { key: 'nota', edit: true, type: 'text' }
           ]}
           created="created_at"
