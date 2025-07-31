@@ -30,7 +30,7 @@ export default function AlquileresSection({ alquileres, setAlquileres }) {
       key: "estado", 
       edit: true, 
       type: "select", 
-      options: ["pendiente", "aprobado", "rechazado"] 
+      options: ["Pendiente", "Aceptado", "Denegado"]
     },
   ]}
   created="created_at"

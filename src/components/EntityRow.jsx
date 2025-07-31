@@ -39,6 +39,18 @@ export default function EntityRow({
                   </option>
                 ))}
               </select>
+            ) : f.type === "date" ? (
+              <input
+                type="date"
+                value={editData[f.key] ? editData[f.key].slice(0, 10) : ""}
+                onChange={(e) =>
+                  setEditData((prev) => ({
+                    ...prev,
+                    [f.key]: e.target.value,
+                  }))
+                }
+                className="border rounded px-1 py-0.5"
+              />
             ) : (
               <input
                 type={f.type || "text"}
@@ -53,19 +65,14 @@ export default function EntityRow({
               />
             )
           ) : f.key === "activo" || f.key === "devuelto" ? (
-            // Mostrar "Sí" o "No" para campos booleanos en modo visualización
             item[f.key] ? "Sí" : "No"
           ) : (
             item[f.key]?.toString()
           )}
         </td>
       ))}
-      <td className="border px-2 py-1">
-        {new Date(item[created]).toLocaleDateString()}
-      </td>
-      <td className="border px-2 py-1">
-        {new Date(item[updated]).toLocaleDateString()}
-      </td>
+      <td className="border px-2 py-1">{new Date(item[created]).toLocaleDateString()}</td>
+      <td className="border px-2 py-1">{new Date(item[updated]).toLocaleDateString()}</td>
       <td className="border px-2 py-1 space-x-1">
         {isEdit ? (
           <>
@@ -73,16 +80,21 @@ export default function EntityRow({
               className="bg-green-500 text-white px-2 rounded"
               onClick={async () => {
                 try {
-                  // Clonar editData para no mutar directamente
                   const dataToSave = { ...editData };
-
-                  // Convertir "true"/"false" string a booleano para devuelto
+                  // Normalizar fechas a YYYY-MM-DD
+                  if (dataToSave.fecha_alquiler) {
+                    dataToSave.fecha_alquiler = dataToSave.fecha_alquiler.slice(0, 10);
+                  }
+                  if (dataToSave.fecha_devolucion) {
+                    dataToSave.fecha_devolucion = dataToSave.fecha_devolucion.slice(0, 10);
+                  }
+                  // Convertir devuelto a boolean
                   if (dataToSave.devuelto === "true") dataToSave.devuelto = true;
                   else if (dataToSave.devuelto === "false") dataToSave.devuelto = false;
+                  // Estado (asegurar minúsculas)
+                  if (dataToSave.estado) dataToSave.estado = dataToSave.estado.toLowerCase();
 
-                  await saveEntity(path, item.id, dataToSave, setter, () =>
-                    setEditId(null)
-                  );
+                  await saveEntity(path, item.id, dataToSave, setter, () => setEditId(null));
                 } catch (e) {
                   const msg = e.response?.data?.message || e.message;
                   alert("No se guardó: " + msg);
@@ -106,8 +118,9 @@ export default function EntityRow({
                 const initialData = {};
                 fields.forEach((f) => {
                   if (f.key === "activo" || f.key === "devuelto") {
-                    // Convertir booleano a string para mostrar en select
                     initialData[f.key] = item[f.key] ? "true" : "false";
+                  } else if (f.type === "date") {
+                    initialData[f.key] = item[f.key] ? item[f.key].slice(0, 10) : "";
                   } else {
                     initialData[f.key] =
                       item[f.key] !== undefined && item[f.key] !== null
