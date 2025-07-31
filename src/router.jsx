@@ -2,10 +2,12 @@ import { createBrowserRouter, Navigate } from 'react-router-dom';
 import Login from './pages/auth/Login.jsx';
 import Register from './pages/auth/Register.jsx';
 import App from './App.jsx';
-import Profile from './pages/Profile.jsx';  // asegurarse que el archivo exista
+import Profile from './pages/Profile.jsx';  
 import ProtectedRoute from './components/ProtectedRoute.jsx';
 import Admin from './pages/Admin.jsx';
 import AdminRoute from './components/AdminRoute.jsx';
+import BuscarLibro from './pages/BuscarLibro.jsx';
+import LibroDetalle from './pages/LibroDetalle.jsx';
 
 const router = createBrowserRouter([
   {
@@ -29,6 +31,14 @@ const router = createBrowserRouter([
     ),
   },
   {
+    path: 'libros/buscar',
+    element: (
+      <ProtectedRoute>
+        <BuscarLibro />
+      </ProtectedRoute>
+    ),
+  },
+  {
     path: 'profile',
     element: (
       <ProtectedRoute>
@@ -42,6 +52,14 @@ const router = createBrowserRouter([
       <AdminRoute>
         <Admin />
       </AdminRoute>
+    ),
+  },
+  {
+    path: 'libros/:id',
+    element: (
+      <ProtectedRoute>
+        <LibroDetalle />
+      </ProtectedRoute>
     ),
   },
 ]);

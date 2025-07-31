@@ -31,7 +31,7 @@ export default function SideNavLeft() {
       icon: <BookOpen />,
       subMenu: true,
       subMenuItems: [
-        { title: "Buscar" },
+        { title: "Buscar", path: "/libros/buscar"},
         { title: "submenu 2" },
         { title: "submenu 3" },
       ],
@@ -84,14 +84,19 @@ export default function SideNavLeft() {
             </li>
 
             {menu.subMenu && subMenuOpen && open && (
-              <ul>
-                {menu.subMenuItems.map((item, idx) => (
-                  <li
-                    key={idx}
-                    className="text-black text-sm flex items-center gap-x-4 cursor-pointer p-2 px-5 hover:bg-[var(--sidebar-accent)]"
-                  >
-                    {item.title}
-                  </li>
+             <ul>
+              {menu.subMenuItems.map((item, idx) => (
+                <li
+                  key={idx}
+                  className="text-black text-sm flex items-center gap-x-4 cursor-pointer p-2 px-5 hover:bg-[var(--sidebar-accent)]"
+                  onClick={() => {
+                    if (item.path) {
+                      navigate(item.path);
+                    }
+                  }}
+                >
+                  {item.title}
+                </li>
                 ))}
               </ul>
             )}

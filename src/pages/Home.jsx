@@ -1,9 +1,11 @@
 import React, { useState, useEffect } from "react";
 import SideNavLeft from "../components/SideNavLeft";
+import { useNavigate } from "react-router-dom";
 
 export default function Home() {
   const [recentBooks, setRecentBooks] = useState([]);
   const [recommendedBooks, setRecommendedBooks] = useState([]);
+  const navigate = useNavigate();
 
   // Llamada a la API para obtener los 4 libros más recientes
   useEffect(() => {
@@ -34,7 +36,13 @@ export default function Home() {
             <p>Cargando libros...</p>
           ) : (
             recentBooks.map((book) => (
-              <div key={book.id} className="border rounded-lg p-4 bg-white shadow-lg">
+              <div key={book.id} onClick={() => navigate(`/libros/${book.id}`)} className="border rounded-lg p-4 bg-white shadow-lg
+               transition-transform duration-200 hover:scale-105 hover:shadow-xl cursor-pointer">
+                <img
+                  src={book.portada || "https://via.placeholder.com/150x220?text=Sin+Portada"}
+                  alt={book.titulo}
+                  className="w-full h-64 object-cover mb-4 rounded"
+                />
                 <h3 className="text-lg font-semibold">{book.titulo}</h3>
                 <p className="text-sm text-gray-500">{book.autor}</p>
                 <p className="mt-2 text-sm text-gray-600">
@@ -52,7 +60,13 @@ export default function Home() {
             <p>Cargando libros recomendados...</p>
           ) : (
             recommendedBooks.map((book) => (
-              <div key={book.id} className="border rounded-lg p-4 bg-white shadow-lg">
+              <div key={book.id} onClick={() => navigate(`/libros/${book.id}`)} className="border rounded-lg p-4 bg-white shadow-lg
+               transition-transform duration-200 hover:scale-105 hover:shadow-xl cursor-pointer">
+                <img
+                  src={book.portada || "https://via.placeholder.com/150x220?text=Sin+Portada"}
+                  alt={book.titulo}
+                  className="w-full h-64 object-cover mb-4 rounded"
+                />
                 <h3 className="text-lg font-semibold">{book.titulo}</h3>
                 <p className="text-sm text-gray-500">{book.autor}</p>
                 <p className="mt-2 text-sm text-gray-600">
