@@ -49,24 +49,39 @@ const LibroDetalle = () => {
     setEnviando(false);
   };
 
+  // Función con registro detallado de errores para el alquiler
   const alquilarEjemplar = async (ejemplarId) => {
     setAlquilando(true);
     setMensajeAlquiler('');
     try {
+      console.log('Enviando solicitud de alquiler con ejemplar_id:', ejemplarId, 'libro_id:', id);
       await axiosClient.post('/api/alquileres', {
         ejemplar_id: ejemplarId,
+        libro_id: id,
       });
       setMensajeAlquiler('Solicitud de alquiler enviada correctamente.');
       // Actualiza la lista de ejemplares disponibles
       const { data } = await axiosClient.get(`/api/libros/${id}/ejemplares-disponibles`);
       setEjemplares(data);
     } catch (err) {
-      if (err.response?.status === 403) {
-        setMensajeAlquiler('Tu cuenta ha sido desactivada. No puedes alquilar.');
-      } else if (err.response?.status === 401) {
-        setMensajeAlquiler('Debes iniciar sesión para alquilar.');
+      console.error('Error al solicitar alquiler:', err);
+      if (err.response) {
+        console.error('Respuesta del servidor:', err.response.data);
+        if (err.response.status === 422 && err.response.data.errors) {
+          // Formatear mensajes de validación
+          const mensajes = Object.entries(err.response.data.errors)
+            .map(([campo, msgs]) => `${campo}: ${msgs.join(', ')}`)
+            .join('\n');
+          setMensajeAlquiler(`Error de validación:\n${mensajes}`);
+        } else if (err.response.status === 403) {
+          setMensajeAlquiler('Tu cuenta ha sido desactivada. No puedes alquilar.');
+        } else if (err.response.status === 401) {
+          setMensajeAlquiler('Debes iniciar sesión para alquilar.');
+        } else {
+          setMensajeAlquiler('Error al solicitar alquiler.');
+        }
       } else {
-        setMensajeAlquiler('Error al solicitar alquiler.');
+        setMensajeAlquiler('Error de red o sin respuesta del servidor.');
       }
     }
     setAlquilando(false);
@@ -134,7 +149,9 @@ const LibroDetalle = () => {
               ) : (
                 <p className="text-gray-500">Debes iniciar sesión para alquilar.</p>
               )}
-              {mensajeAlquiler && <p className="mt-2 text-blue-600">{mensajeAlquiler}</p>}
+              {mensajeAlquiler && (
+                <pre className="mt-2 text-blue-600 whitespace-pre-wrap">{mensajeAlquiler}</pre>
+              )}
             </div>
           </div>
         </div>

@@ -4,12 +4,11 @@ import SideNavLeft from "../components/SideNavLeft";
 import ProfileForm from "../components/ProfileForm";
 
 export default function Profile() {
-  const [userData, setUserData] = useState({ name: '', telefono: '', direccion: '' });
+  const [userData, setUserData] = useState({ name: '', telefono: '', direccion: '', rol_id: null });
   const [formData, setFormData] = useState({ name: '', telefono: '', direccion: '' });
   const [isEditing, setIsEditing] = useState(false);
   const [errorMessage, setErrorMessage] = useState('');
   const [successMessage, setSuccessMessage] = useState('');
-
   const [alquileres, setAlquileres] = useState([]);
   const [loadingAlquileres, setLoadingAlquileres] = useState(false);
   const [errorAlquileres, setErrorAlquileres] = useState('');
@@ -39,6 +38,20 @@ export default function Profile() {
         console.error('Error al cargar alquileres', error);
       })
       .finally(() => setLoadingAlquileres(false));
+  };
+
+  const handleDeleteAlquiler = (alquiler) => {
+    const confirm = window.confirm("¿Estás seguro de que quieres eliminar este alquiler?");
+    if (!confirm) return;
+
+    axiosClient.delete(`/api/alquileres/${alquiler.id}`)
+      .then(() => {
+        setAlquileres(prev => prev.filter(a => a.id !== alquiler.id));
+      })
+      .catch((error) => {
+        alert(error.response?.data?.error || "Error al eliminar el alquiler");
+        console.error("Error al eliminar alquiler", error);
+      });
   };
 
   const handleChange = useCallback((e) => {
@@ -96,6 +109,7 @@ export default function Profile() {
                   <th className="border border-gray-300 px-4 py-2">Fecha Devolución</th>
                   <th className="border border-gray-300 px-4 py-2">Devuelto</th>
                   <th className="border border-gray-300 px-4 py-2">Estado</th>
+                  <th className="border border-gray-300 px-4 py-2">Acciones</th>
                 </tr>
               </thead>
               <tbody>
@@ -106,6 +120,17 @@ export default function Profile() {
                     <td className="border border-gray-300 px-4 py-2">{alq.fecha_devolucion ? new Date(alq.fecha_devolucion).toLocaleDateString() : "-"}</td>
                     <td className="border border-gray-300 px-4 py-2">{alq.devuelto ? "Sí" : "No"}</td>
                     <td className="border border-gray-300 px-4 py-2">{alq.estado}</td>
+                    <td className="border border-gray-300 px-4 py-2">
+                      {(userData.rol_id === 3 || alq.estado?.toLowerCase() === 'pendiente') && (
+
+                        <button
+                          onClick={() => handleDeleteAlquiler(alq)}
+                          className="bg-red-500 text-white px-3 py-1 rounded hover:bg-red-600"
+                        >
+                          Eliminar
+                        </button>
+                      )}
+                    </td>
                   </tr>
                 ))}
               </tbody>
