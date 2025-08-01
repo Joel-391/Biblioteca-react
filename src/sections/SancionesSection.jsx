@@ -1,7 +1,7 @@
 import Section from "../components/Section";
 import EntityRow from "../components/EntityRow";
 import { saveEntity, deleteEntity, createEntity } from "../api/adminApi";
-import { Plus } from 'lucide-react';
+import { Plus, CircleX, Check } from 'lucide-react';
 import { useState } from "react";
 
 export default function SancionesSection({ sanciones, setSanciones }) {
@@ -19,7 +19,9 @@ export default function SancionesSection({ sanciones, setSanciones }) {
       setShow={setShowSanciones}
       headers={["ID","User ID","Motivo","Inicio","Fin","Estado","Monto","Creado","Actualizado","Acciones"]}
       extraHeader={() => (
-        <button className="bg-blue-600 text-white rounded-full px-1.5 py-1.5 mr-1 mb-1" onClick={() => setCreatingSan(true)}><Plus size={15}/></button>
+        <button className="bg-blue-600 text-white rounded-full px-1.5 py-1.5 mr-1 mb-1"
+                onClick={() => setCreatingSan(true)}
+                title="Crear nueva sanción"><Plus size={15}/></button>
       )}
       renderNew={() => creatingSan && (
         <tr className="bg-green-50">
@@ -31,9 +33,13 @@ export default function SancionesSection({ sanciones, setSanciones }) {
           <td><input type="text" value={newSanData.estado} onChange={e => setNewSanData({...newSanData, estado: e.target.value})} className="border px-1 py-0.5 w-full" /></td>
           <td><input type="number" value={newSanData.monto_sancion} onChange={e => setNewSanData({...newSanData, monto_sancion: +e.target.value})} className="border px-1 py-0.5 w-full" /></td>
           <td colSpan={2}></td>
-          <td className="space-x-1">
-            <button className="bg-green-500 text-white px-2 rounded" onClick={() => createEntity("sanciones", newSanData, setSanciones, () => { setNewSanData({ user_id:"",motivo:"",fecha_inicio:"",fecha_fin:"",estado:"",monto_sancion:0 }); setCreatingSan(false); })}>Crear</button>
-            <button className="bg-gray-400 text-white px-2 rounded" onClick={() => setCreatingSan(false)}>Cancelar</button>
+          <td className="flex justify-center">
+            <button className="bg-green-500 text-white m-1 p-1 rounded"
+                    onClick={() => createEntity("sanciones", newSanData, setSanciones, () => { setNewSanData({ user_id:"",motivo:"",fecha_inicio:"",fecha_fin:"",estado:"",monto_sancion:0 }); setCreatingSan(false); })}
+                    title="Confirmar creación"><Check /></button>
+            <button className="bg-gray-400 text-white m-1 p-1 rounded"
+                    onClick={() => setCreatingSan(false)}
+                    title="Cancelar creación"><CircleX /></button>
           </td>
         </tr>
       )}

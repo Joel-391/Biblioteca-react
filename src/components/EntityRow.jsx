@@ -1,4 +1,5 @@
 import React from "react";
+import { Save, CircleX, Pencil, Trash2 } from 'lucide-react';
 
 export default function EntityRow({
   item,
@@ -77,7 +78,7 @@ export default function EntityRow({
         {isEdit ? (
           <>
             <button
-              className="bg-green-500 text-white px-2 rounded"
+              className="bg-green-500 text-white mx-1 p-1 rounded"
               onClick={async () => {
                 try {
                   const dataToSave = { ...editData };
@@ -100,20 +101,23 @@ export default function EntityRow({
                   alert("No se guardó: " + msg);
                 }
               }}
+              title="Guardar edición"
             >
-              Guardar
+            <Save />
             </button>
             <button
-              className="bg-gray-400 text-white px-2 rounded"
+              className="bg-gray-400 text-white mx-1 p-1 rounded"
               onClick={() => setEditId(null)}
+              title="Cancelar edición"
             >
-              Cancelar
+            <CircleX />
             </button>
           </>
         ) : (
           <>
+            <div className="flex">
             <button
-              className="bg-blue-500 text-white px-2 rounded"
+              className="bg-blue-500 text-white mx-1 p-1 rounded"
               onClick={() => {
                 const initialData = {};
                 fields.forEach((f) => {
@@ -131,15 +135,18 @@ export default function EntityRow({
                 setEditId(item.id);
                 setEditData(initialData);
               }}
+              title="Editar"
             >
-              Editar
+            <Pencil />
             </button>
             <button
-              className="bg-red-600 text-white px-2 rounded"
+              className="bg-red-600 text-white mx-1 p-1 rounded"
               onClick={() => deleteEntity(path, item.id, setter)}
+              title="Eliminar"
             >
-              Borrar
+            <Trash2 />
             </button>
+            </div>
           </>
         )}
       </td>
