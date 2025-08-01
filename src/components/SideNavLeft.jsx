@@ -36,7 +36,7 @@ export default function SideNavLeft() {
         { title: "submenu 3" },
       ],
     },
-    { title: "Analytics", icon: <BookOpen /> },
+    { title: "Sanciones", icon: <BookOpen />, path: "/sanciones" },
     { title: "Profile", icon: <BookOpen />, path: "/profile" },
     { title: "Logout", spacing: true, icon: <LogOut /> },
   ];

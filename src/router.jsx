@@ -8,6 +8,7 @@ import Admin from './pages/Admin.jsx';
 import AdminRoute from './components/AdminRoute.jsx';
 import BuscarLibro from './pages/BuscarLibro.jsx';
 import LibroDetalle from './pages/LibroDetalle.jsx';
+import Sanciones from './pages/Sanciones.jsx';
 
 const router = createBrowserRouter([
   {
@@ -59,6 +60,14 @@ const router = createBrowserRouter([
     element: (
       <ProtectedRoute>
         <LibroDetalle />
+      </ProtectedRoute>
+    ),
+  },
+  {
+    path: 'sanciones',
+    element: (
+      <ProtectedRoute>
+        <Sanciones />
       </ProtectedRoute>
     ),
   },
