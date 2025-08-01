@@ -1,7 +1,7 @@
 import Section from "../components/Section";
 import EntityRow from "../components/EntityRow";
 import { saveEntity, deleteEntity, createEntity } from "../api/adminApi";
-import { Plus } from 'lucide-react';
+import { Plus, CircleX, Check } from 'lucide-react';
 import { useState } from "react";
 
 export default function EjemplaresSection({ ejemplares, setEjemplares }) {
@@ -19,7 +19,9 @@ export default function EjemplaresSection({ ejemplares, setEjemplares }) {
       setShow={setShowEjemplares}
       headers={["ID", "Libro ID", "Ubicación", "Disponible", "Nota", "Creado", "Actualizado", "Acciones"]}
       extraHeader={() => (
-        <button className="bg-blue-600 text-white rounded-full px-1.5 py-1.5 mr-1 mb-1" onClick={() => setCreatingEjem(true)}><Plus size={15}/></button>
+        <button className="bg-blue-600 text-white rounded-full px-1.5 py-1.5 mr-1 mb-1"
+                onClick={() => setCreatingEjem(true)}
+                title="Crear nuevo ejemplar"><Plus size={15}/></button>
       )}
       renderNew={() => creatingEjem && (
         <tr className="bg-green-50">
@@ -29,9 +31,13 @@ export default function EjemplaresSection({ ejemplares, setEjemplares }) {
           <td className="text-center"><input type="checkbox" checked={newEjemData.disponible} onChange={e => setNewEjemData({ ...newEjemData, disponible: e.target.checked })} /></td>
           <td><input type="text" value={newEjemData.nota} onChange={e => setNewEjemData({ ...newEjemData, nota: e.target.value })} className="border px-1 py-0.5 w-full" /></td>
           <td colSpan={2}></td>
-          <td className="space-x-1">
-            <button className="bg-green-500 text-white px-2 rounded" onClick={() => createEntity("ejemplares", newEjemData, setEjemplares, () => { setNewEjemData({ libro_id: "", ubicacion_fisica: "", disponible: false, nota: "" }); setCreatingEjem(false); })}>Crear</button>
-            <button className="bg-gray-400 text-white px-2 rounded" onClick={() => setCreatingEjem(false)}>Cancelar</button>
+          <td className="flex justify-center">
+            <button className="bg-green-500 text-white m-1 p-1 rounded"
+                    onClick={() => createEntity("ejemplares", newEjemData, setEjemplares, () => { setNewEjemData({ libro_id: "", ubicacion_fisica: "", disponible: false, nota: "" }); setCreatingEjem(false); })}
+                    title="Confirmar creación"><Check /></button>
+            <button className="bg-gray-400 text-white m-1 p-1 rounded"
+                    onClick={() => setCreatingEjem(false)}
+                    title="Cancelar creación"><CircleX /></button>
           </td>
         </tr>
       )}

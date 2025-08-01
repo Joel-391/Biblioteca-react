@@ -1,10 +1,9 @@
 import Section from "../components/Section";
 import EntityRow from "../components/EntityRow";
 import { saveEntity, deleteEntity, createEntity } from "../api/adminApi";
-import { Plus } from 'lucide-react';
+import { Plus, CircleX, Check } from 'lucide-react';
 import { useState } from "react";
 
-// 🔧 Función para convertir fecha ISO a yyyy-MM-dd
 function formatDate(dateString) {
   if (!dateString) return "";
   return new Date(dateString).toISOString().split("T")[0];
@@ -46,6 +45,7 @@ export default function SancionesSection({ sanciones, setSanciones }) {
         <button
           className="bg-blue-600 text-white rounded-full px-1.5 py-1.5 mr-1 mb-1"
           onClick={() => setCreatingSan(true)}
+          title="Crear nueva sanción"
         >
           <Plus size={15} />
         </button>
@@ -102,9 +102,9 @@ export default function SancionesSection({ sanciones, setSanciones }) {
             />
           </td>
           <td colSpan={2}></td>
-          <td className="space-x-1">
+          <td className="flex justify-center">
             <button
-              className="bg-green-500 text-white px-2 rounded"
+              className="bg-green-500 text-white m-1 p-1 rounded"
               onClick={() => createEntity("sanciones", newSanData, setSanciones, () => {
                 setNewSanData({
                   user_id: "",
@@ -116,14 +116,16 @@ export default function SancionesSection({ sanciones, setSanciones }) {
                 });
                 setCreatingSan(false);
               })}
+              title="Confirmar creación"
             >
-              Crear
+              <Check />
             </button>
             <button
-              className="bg-gray-400 text-white px-2 rounded"
+              className="bg-gray-400 text-white m-1 p-1 rounded"
               onClick={() => setCreatingSan(false)}
+              title="Cancelar creación"
             >
-              Cancelar
+              <CircleX />
             </button>
           </td>
         </tr>

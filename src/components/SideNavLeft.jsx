@@ -50,7 +50,7 @@ export default function SideNavLeft() {
       <Link to="/home" className="inline-flex items-center p-2 no-underline">
         <House className={`bg-amber300 text-4xl rounded cursor-pointer block float-left mt-1 mr-1 duration-300 ${open && "rotate-[360deg]"}`} />
         <h1 className={`text-black origin-left font-medium text-2xl duration-300 ${!open && "scale-0"}`}>
-          Home
+          BiblioULEAM
         </h1>
       </Link>
 

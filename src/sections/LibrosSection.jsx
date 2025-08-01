@@ -1,7 +1,7 @@
 import Section from "../components/Section";
 import EntityRow from "../components/EntityRow";
 import { saveEntity, deleteEntity, createEntity } from "../api/adminApi";
-import { Plus } from 'lucide-react';
+import { Plus, CircleX, Check } from 'lucide-react';
 import { useState } from "react";
 
 export default function LibrosSection({ libros, setLibros }) {
@@ -22,6 +22,7 @@ export default function LibrosSection({ libros, setLibros }) {
         <button
           className="bg-blue-600 text-white rounded-full px-1.5 py-1.5 mr-1 mb-1"
           onClick={() => setCreatingLibro(true)}
+          title="Crear nuevo libro"
         ><Plus size={15}/></button>
       )}
       renderNew={() => creatingLibro && (
@@ -34,9 +35,13 @@ export default function LibrosSection({ libros, setLibros }) {
           <td><input type="text" value={newLibroData.isbn} onChange={e => setNewLibroData({...newLibroData, isbn: e.target.value})} className="border px-1 py-0.5 w-full" /></td>
           <td><input type="number" value={newLibroData.categoria_id} onChange={e => setNewLibroData({...newLibroData, categoria_id: +e.target.value})} className="border px-1 py-0.5 w-full" /></td>
           <td colSpan={2}></td>
-          <td className="space-x-1">
-            <button className="bg-green-500 text-white px-2 rounded" onClick={() => createEntity("libros", newLibroData, setLibros, () => { setNewLibroData({ titulo:"",autor:"",descripcion:"",anio_publicacion:"",isbn:"",categoria_id:1 }); setCreatingLibro(false); })}>Crear</button>
-            <button className="bg-gray-400 text-white px-2 rounded" onClick={() => setCreatingLibro(false)}>Cancelar</button>
+          <td className="flex justify-center">
+            <button className="bg-green-500 text-white m-1 p-1 rounded"
+                    onClick={() => createEntity("libros", newLibroData, setLibros, () => { setNewLibroData({ titulo:"",autor:"",descripcion:"",anio_publicacion:"",isbn:"",categoria_id:1 }); setCreatingLibro(false); })}
+                    title="Confirmar creación"><Check /></button>
+            <button className="bg-gray-400 text-white m-1 p-1 rounded"
+                    onClick={() => setCreatingLibro(false)}
+                    title="Cancelar creación"><CircleX /></button>
           </td>
         </tr>
       )}
