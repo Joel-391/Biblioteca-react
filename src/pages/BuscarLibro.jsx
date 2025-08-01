@@ -33,7 +33,7 @@ const BuscarLibro = () => {
     <div className="flex">
       <SideNavLeft />
       <div className="p-7 w-full">
-        <h2 className="text-2xl font-bold mb-4">Buscar Libros</h2>
+        <h2 className="text-2xl font-bold mb-4">Buscardor de Libros</h2>
 
         <div className="flex flex-wrap gap-4 mb-4">
           <input

@@ -25,20 +25,23 @@ export default function SideNavLeft() {
     ...(user && user.rol_id === 3
       ? [{ title: "Administrador", icon: <LayoutDashboard />, path: "/admin" }]
       : []),
-    { title: "Pages", spacing: true, icon: <BookOpen /> },
+    //{ title: "Pages", spacing: true, icon: <BookOpen /> },
     {
       title: "Libro",
       icon: <BookOpen />,
       subMenu: true,
       subMenuItems: [
-        { title: "Buscar", path: "/libros/buscar"},
-        { title: "submenu 2" },
-        { title: "submenu 3" },
+        { title: "Buscador", path: "/libros/buscar"},
+        
+        
       ],
     },
-    { title: "Sanciones", icon: <BookOpen />, path: "/sanciones" },
-    { title: "Profile", icon: <BookOpen />, path: "/profile" },
-    { title: "Logout", spacing: true, icon: <LogOut /> },
+    
+    ...(user && user.rol_id !== 3
+    ? [{ title: "Sanciones", icon: <BookOpen />, path: "/sanciones" }]
+    : []),
+    { title: "Perfil", icon: <BookOpen />, path: "/profile" },
+    { title: "Cerrar sesión", spacing: true, icon: <LogOut /> },
   ];
 
   return (
@@ -60,7 +63,7 @@ export default function SideNavLeft() {
             <li
               className={`text-black text-sm flex items-center gap-x-4 cursor-pointer p-2 hover:bg-[var(--sidebar-accent)] rounded-md ${menu.spacing ? "mt-9" : "mt-2"}`}
               onClick={() => {
-                if (menu.title === "Logout") {
+                if (menu.title === "Cerrar sesión") {
                   logout();
                 } else if (menu.subMenu) {
                   setSubMenuOpen(!subMenuOpen);
