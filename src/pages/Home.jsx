@@ -5,6 +5,7 @@ import { useNavigate } from "react-router-dom";
 export default function Home() {
   const [recentBooks, setRecentBooks] = useState([]);
   const [recommendedBooks, setRecommendedBooks] = useState([]);
+  const [allBooks, setAllBooks] = useState([]);
   const navigate = useNavigate();
 
   // Llamada a la API para obtener los 4 libros más recientes
@@ -23,6 +24,13 @@ export default function Home() {
       .catch((error) => console.error("Error al obtener libros recomendados:", error));
   }, []);
 
+  // Todos los libros
+  useEffect(() => {
+    fetch("http://localhost:8000/api/libros")
+      .then((response) => response.json())
+      .then((data) => setAllBooks(data))
+      .catch((error) => console.error("Error al obtener todos los libros:", error));
+  }, []);
   return (
     <div className="flex">
       <SideNavLeft />
@@ -73,6 +81,34 @@ export default function Home() {
                   Fecha de publicación: {new Date(book.created_at).toLocaleDateString()}
                 </p>
               </div>
+              
+            ))
+          )}
+        </div>
+
+      {/* Todos los libros */}
+        <h2 className="mt-6 text-xl font-medium">Todos los Libros</h2>
+        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6 mt-6">
+          {allBooks.length === 0 ? (
+            <p>No hay libros disponibles.</p>
+          ) : (
+            allBooks.map((book) => (
+              <div
+                key={book.id}
+                onClick={() => navigate(`/libros/${book.id}`)}
+                className="border rounded-lg p-4 bg-white shadow-lg transition-transform duration-200 hover:scale-105 hover:shadow-xl cursor-pointer"
+              >
+                <img
+                  src={book.portada || "https://via.placeholder.com/150x220?text=Sin+Portada"}
+                  alt={book.titulo}
+                  className="w-full h-64 object-cover mb-4 rounded"
+                />
+                <h3 className="text-lg font-semibold">{book.titulo}</h3>
+                <p className="text-sm text-gray-500">{book.autor}</p>
+                <p className="mt-2 text-sm text-gray-600">
+                  Fecha de publicación: {new Date(book.created_at).toLocaleDateString()}
+                </p>
+              </div>
             ))
           )}
         </div>
@@ -80,3 +116,4 @@ export default function Home() {
     </div>
   );
 }
+

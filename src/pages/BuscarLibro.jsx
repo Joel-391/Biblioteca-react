@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import axiosClient from '../api/Axios';
 import SideNavLeft from '../components/SideNavLeft';
 import { useNavigate } from 'react-router-dom';
@@ -6,6 +6,7 @@ import { useNavigate } from 'react-router-dom';
 const BuscarLibro = () => {
   const [titulo, setTitulo] = useState('');
   const [categoria, setCategoria] = useState('');
+  const [categorias, setCategorias] = useState([]);
   const [resultados, setResultados] = useState([]);
   const [error, setError] = useState('');
   const navigate = useNavigate();
@@ -27,13 +28,18 @@ const BuscarLibro = () => {
       setError('Hubo un problema al buscar libros.');
     }
   };
-  
+
+  useEffect(() => {
+    axiosClient.get('/categorias')
+      .then((res) => setCategorias(res.data))
+      .catch((err) => console.error('Error al cargar categorías:', err));
+  }, []);
 
   return (
     <div className="flex">
       <SideNavLeft />
       <div className="p-7 w-full">
-        <h2 className="text-2xl font-bold mb-4">Buscardor de Libros</h2>
+        <h2 className="text-2xl font-bold mb-4">Buscador de Libros</h2>
 
         <div className="flex flex-wrap gap-4 mb-4">
           <input
@@ -43,13 +49,21 @@ const BuscarLibro = () => {
             onChange={(e) => setTitulo(e.target.value)}
             className="border p-2 rounded w-64"
           />
-          <input
-            type="text"
-            placeholder="Buscar por categoría"
-            value={categoria}
-            onChange={(e) => setCategoria(e.target.value)}
-            className="border p-2 rounded w-64"
-          />
+          <div className="w-64">
+            <input
+              list="lista-categorias"
+              type="text"
+              placeholder="Buscar por categoría"
+              value={categoria}
+              onChange={(e) => setCategoria(e.target.value)}
+              className="border p-2 rounded w-full"
+            />
+            <datalist id="lista-categorias">
+              {categorias.map((cat) => (
+                <option key={cat.id} value={cat.nombre_cat} />
+              ))}
+            </datalist>
+          </div>
           <button
             onClick={buscar}
             className="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded"
@@ -62,8 +76,11 @@ const BuscarLibro = () => {
 
         <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
           {resultados.map((libro) => (
-            <div key={libro.id} onClick={() => navigate(`/libros/${libro.id}`)} className="border rounded-lg p-4 bg-white shadow-lg transition-transform duration-200 
-            hover:scale-105 hover:shadow-xl cursor-pointer">
+            <div
+              key={libro.id}
+              onClick={() => navigate(`/libros/${libro.id}`)}
+              className="border rounded-lg p-4 bg-white shadow-lg transition-transform duration-200 hover:scale-105 hover:shadow-xl cursor-pointer"
+            >
               <img
                 src={libro.portada || "https://via.placeholder.com/150x220?text=Sin+Portada"}
                 alt={libro.titulo}
